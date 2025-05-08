@@ -1,27 +1,41 @@
 <!DOCTYPE html>
 <html>
 <?php require "lib/head.php"; ?>
+<?php
+    $database = connectDatabase();
+    
+    $id = $_GET["id"] ?? "";
+
+    if(empty($id)) {
+        $_SESSION["error"] = "User not found";
+        header("Location: /manage/users");
+        exit;
+    }
+?>
   <body>
     <div class="container mx-auto my-5" style="max-width: 700px;">
+      <?php require "lib/important_message.php"; ?>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="h1">Change Password</h1>
       </div>
       <div class="card mb-2 p-4">
-        <form>
+        <form action="/manage/users/do_changepassword" method="POST">
+          <input type="hidden" name="id" value="<?= $id; ?>">
           <div class="mb-3">
             <div class="row">
               <div class="col">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" />
+                <input type="password" class="form-control" id="password" name="password" />
               </div>
               <div class="col">
-                <label for="confirm-password" class="form-label"
+                <label for="confirm_password" class="form-label"
                   >Confirm Password</label
                 >
                 <input
                   type="password"
                   class="form-control"
-                  id="confirm-password"
+                  id="confirm_password"
+                  name="confirm_password"
                 />
               </div>
             </div>

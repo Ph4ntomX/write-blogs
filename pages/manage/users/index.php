@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <html>
 <?php require "lib/head.php"; ?>
+<?php
+    $database = connectDatabase();
+    $sql = "SELECT * FROM users";
+    $statement = $database->query($sql);
+    $users = $statement->fetchAll();
+?>
+
   <body>
     <div class="container mx-auto my-5" style="max-width: 700px;">
+
+    <?php require "lib/important_message.php"; ?>
+
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="h1">Manage Users</h1>
         <div class="text-end">
@@ -23,75 +33,43 @@
             </tr>
           </thead>
           <tbody>
+            <?php foreach($users as $user) : ?>
             <tr>
-              <th scope="row">3</th>
-              <td>Jack</td>
-              <td>jack@gmail.com</td>
-              <td><span class="badge bg-success">User</span></td>
+              <th scope="row"><?= $user["id"]; ?></th>
+              <td><?= $user["name"]; ?></td>
+              <td><?= $user["email"]; ?></td>
+              <td><span class="badge bg-<?= $user["role"] == "admin" ? "primary" : ($user["role"] == "editor" ? "info" : "success"); ?>"><?= $user["role"]; ?></span></td>
               <td class="text-end">
+              <?php if (isEditor() && userHasHigherRole($user["role"]) && $_SESSION["user"]["id"] !== $user["id"]) : ?>
                 <div class="buttons">
-                  <a
-                    href="/manage/users/edit"
-                    class="btn btn-success btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a
-                    href="/manage/users/change-password"
-                    class="btn btn-warning btn-sm me-2"
-                    ><i class="bi bi-key"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
+                <form action="/manage/users/edit" method="GET" class="d-inline">
+                      <input type="hidden" name="id" value="<?= $user["id"]; ?>">
+                      <button type="submit" class="btn btn-success btn-sm">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                </form>
+
+                <form action="/manage/users/change-password" method="GET" class="d-inline ms-2">
+                      <input type="hidden" name="id" value="<?= $user["id"]; ?>">
+                      <button type="submit" class="btn btn-warning btn-sm">
+                        <i class="bi bi-key"></i>
+                      </button>
+                </form>
+
+                <?php if(isAdmin()) : ?>
+                <form action="/manage/users/do_delete" method="POST" class="d-inline ms-2">
+                      <input type="hidden" name="id" value="<?= $user["id"]; ?>">
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                </form>
+                <?php endif; ?>
                 </div>
+                
+            <?php endif; ?>
               </td>
             </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jane</td>
-              <td>jane@gmail.com</td>
-              <td><span class="badge bg-info">Editor</span></td>
-              <td class="text-end">
-                <div class="buttons">
-                  <a
-                    href="/manage/users/edit"
-                    class="btn btn-success btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a
-                    href="/manage/users/change-password"
-                    class="btn btn-warning btn-sm me-2"
-                    ><i class="bi bi-key"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td>John</td>
-              <td>john@gmail.com</td>
-              <td><span class="badge bg-primary">Admin</span></td>
-              <td class="text-end">
-                <div class="buttons">
-                  <a
-                    href="/manage/users/edit"
-                    class="btn btn-success btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a
-                    href="/manage/users/change-password"
-                    class="btn btn-warning btn-sm me-2"
-                    ><i class="bi bi-key"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                </div>
-              </td>
-            </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

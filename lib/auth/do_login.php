@@ -14,18 +14,23 @@
             if ($user) {
                 if (password_verify($password, $user["password"])) {
                     $_SESSION["user"] = $user;
+                    $_SESSION["success"] = "Welcome, " . $user["name"];
                     header("Location: /");
+                    exit();
                 } else {
-                    echo("Invalid password");
-                    echo "<a href='/login'>Go back</a>";
+                    $_SESSION["error"] = "Invalid password";
+                    header("Location: /login");
+                    exit();
                 }
             } else {
-                echo("User not found");
-                echo "<a href='/login'>Go back</a>";
+                $_SESSION["error"] = "User not found";
+                header("Location: /login");
+                exit();
             }
         } else {
-            echo("Email and password are required");
-            echo "<a href='/login'>Go back</a>";
+            $_SESSION["error"] = "Email and password are required";
+            header("Location: /login");
+            exit();
         }
 
         

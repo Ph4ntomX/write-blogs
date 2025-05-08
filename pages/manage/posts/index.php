@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html>
 <?php require "lib/head.php"; ?>
+<?php
+    $database = connectDatabase();
+    $posts = getPosts($database);
+
+    if(!isEditor()) {
+      $posts = array_filter($posts, function($post) {
+        return $post["user_id"] === $_SESSION["user"]["id"];
+      });
+    }
+?>
 
   <body>
     <div class="container mx-auto my-5" style="max-width: 700px;">
+      <?php require "lib/important_message.php"; ?>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="h1">Manage Posts</h1>
         <div class="text-end">
@@ -23,121 +34,36 @@
             </tr>
           </thead>
           <tbody>
+            <?php foreach($posts as $post) : ?>
             <tr>
-              <th scope="row">5</th>
-              <td>Post 5</td>
-              <td><span class="badge bg-warning">Pending Review</span></td>
+              <th scope="row"><?= $post["id"]; ?></th>
+              <td><?= $post["title"]; ?></td>
+              <?php if($post["status"] == "pending") : ?>
+                <td><span class="badge bg-warning">Pending Review</span></td>
+              <?php else : ?>
+                <td><span class="badge bg-success">Published</span></td>
+              <?php endif; ?>
               <td class="text-end">
                 <div class="buttons">
-                  <a
-                    href="/post"
-                    target="_blank"
-                    class="btn btn-primary btn-sm me-2 disabled"
-                    ><i class="bi bi-eye"></i
-                  ></a>
-                  <a
-                    href="/manage/posts/edit"
-                    class="btn btn-secondary btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
+                  <a href="/post?id=<?= $post["id"]; ?>" target="_blank" class="btn btn-primary btn-sm me-2 <?php if($post["status"] == "pending") : ?>disabled<?php endif; ?>">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <form action="/manage/posts/edit" method="GET" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $post["id"]; ?>">
+                    <button type="submit" class="btn btn-secondary btn-sm me-2">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </form>
+                  <form action="/manage/posts/do_delete" method="POST" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $post["id"]; ?>">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
                 </div>
               </td>
             </tr>
-            <tr>
-              <th scope="row">4</th>
-              <td>Post 4</td>
-              <td><span class="badge bg-success">Publish</span></td>
-              <td class="text-end">
-                <div class="buttons">
-                  <a
-                    href="post.html"
-                    target="_blank"
-                    class="btn btn-primary btn-sm me-2"
-                    ><i class="bi bi-eye"></i
-                  ></a>
-                  <a
-                    href="/manage/posts/edit"
-                    class="btn btn-secondary btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Post 3</td>
-              <td><span class="badge bg-success">Publish</span></td>
-              <td class="text-end">
-                <div class="buttons">
-                  <a
-                    href="post.html"
-                    target="_blank"
-                    class="btn btn-primary btn-sm me-2"
-                    ><i class="bi bi-eye"></i
-                  ></a>
-                  <a
-                    href="/manage/posts/edit"
-                    class="btn btn-secondary btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Post 2</td>
-              <td><span class="badge bg-success">Publish</span></td>
-              <td class="text-end">
-                <div class="buttons">
-                  <a
-                    href="post.html"
-                    target="_blank"
-                    class="btn btn-primary btn-sm me-2"
-                    ><i class="bi bi-eye"></i
-                  ></a>
-                  <a
-                    href="/manage/posts/edit"
-                    class="btn btn-secondary btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td>Post 1</td>
-              <td><span class="badge bg-success">Publish</span></td>
-              <td class="text-end">
-                <div class="buttons">
-                  <a
-                    href="post.html"
-                    target="_blank"
-                    class="btn btn-primary btn-sm me-2"
-                    ><i class="bi bi-eye"></i
-                  ></a>
-                  <a
-                    href="/manage/posts/edit"
-                    class="btn btn-secondary btn-sm me-2"
-                    ><i class="bi bi-pencil"></i
-                  ></a>
-                  <a href="#" class="btn btn-danger btn-sm"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                </div>
-              </td>
-            </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

@@ -8,6 +8,9 @@
         header("Location: /");
     }
 
+    // remove query string from path
+    $path = parse_url($path, PHP_URL_PATH);
+
     switch($path) {
         case "/login" :
             require "pages/login.php";
@@ -43,11 +46,35 @@
         case "/manage/users/change-password" :
             require "pages/manage/users/change-password.php";
             break;
+        case "/manage/users/do_add" :
+            require "lib/manage/users/add.php";
+            break;
+        case "/manage/users/do_edit" :
+            require "lib/manage/users/edit.php";
+            break;
+        case "/manage/users/do_changepassword" :
+            require "lib/manage/users/changepwd.php";
+            break;
+        case "/manage/users/do_delete" :
+            require "lib/manage/users/delete.php";
+            break;
+        case "/manage/posts" :
+            require "pages/manage/posts/index.php";
+            break;
         case "/manage/posts/add" :
             require "pages/manage/posts/add.php";
             break;
         case "/manage/posts/edit" :
             require "pages/manage/posts/edit.php";
+            break;
+        case "/manage/posts/do_add" :
+            require "lib/manage/posts/add.php";
+            break;
+        case "/manage/posts/do_edit" :
+            require "lib/manage/posts/edit.php";
+            break;
+        case "/manage/posts/do_delete" :
+            require "lib/manage/posts/delete.php";
             break;
         default :
             require "pages/home.php";
