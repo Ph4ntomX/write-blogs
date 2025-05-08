@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
-<?php require "lib/head.php"; ?>
 <?php
+  require "lib/head.php";
+  verifyUserLoggedIn();
     $database = connectDatabase();
     
     $id = $_GET["id"] ?? "";

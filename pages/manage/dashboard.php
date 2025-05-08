@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-<?php require "lib/head.php"; ?>
+<?php 
+  require "lib/head.php";
+  verifyUserLoggedIn();
+?>
   <body>
     <div class="container mx-auto my-5" style="max-width: 800px;">
       <h1 class="h1 mb-4 text-center">Dashboard</h1>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
-<?php require "lib/head.php"; ?>
 <?php
+    require "lib/head.php";
+    verifyUserLoggedIn();
+
     $database = connectDatabase();
     $sql = "SELECT * FROM users";
     $statement = $database->query($sql);
