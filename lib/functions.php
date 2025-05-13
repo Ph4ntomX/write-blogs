@@ -27,7 +27,7 @@
     }
 
     function getPosts($database) {
-        $query = "SELECT * FROM posts";
+        $query = "SELECT * FROM posts ORDER BY id DESC";
         $statement = $database->prepare($query);
         $statement->execute();
         return $statement->fetchAll();

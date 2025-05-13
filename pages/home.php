@@ -6,7 +6,7 @@
     
     $posts = getPosts($database);
 
-    $posts = array_filter(array_reverse($posts), function($post) {
+    $posts = array_filter($posts, function($post) {
         return $post["status"] == "publish";
     });
 ?>
